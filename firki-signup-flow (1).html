@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Firki — Create Account</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Source+Sans+Pro:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --teal:#00B3C8;
+    --teal-dark:#00919F;
+    --mint:#5CC09F;
+    --charcoal:#30302F;
+    --cream:#F2F1E2;
+    --yellow:#FFD060;
+    --coral:#F05C4E;
+    --white:#FFFFFF;
+    --border:#E3E1CE;
+    --shadow: 0 8px 24px rgba(48,48,47,0.08);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Source Sans Pro', sans-serif;
+    background:var(--cream);
+    color:var(--charcoal);
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+    position:relative;
+    overflow-x:hidden;
+  }
+
+  /* decorative diagonal band, echoes brand sheet */
+  .bg-band{
+    position:fixed;
+    top:0; right:0;
+    width:60vw; height:38vh;
+    background:var(--yellow);
+    clip-path:polygon(30% 0, 100% 0, 100% 100%, 0 0);
+    z-index:0;
+    opacity:0.9;
+  }
+  .bg-dot{
+    position:fixed;
+    width:120px;height:120px;
+    border-radius:50%;
+    border:10px solid var(--mint);
+    opacity:0.25;
+    bottom:-40px;left:-40px;
+    z-index:0;
+  }
+
+  .card{
+    position:relative;
+    z-index:1;
+    width:100%;
+    max-width:460px;
+    background:var(--white);
+    border-radius:20px;
+    box-shadow:var(--shadow);
+    padding:36px 32px 32px;
+  }
+
+  /* ---------- Header / logo ---------- */
+  .logo-row{
+    display:flex;
+    align-items:center;
+    margin-bottom:26px;
+  }
+  .logo-panel{
+    background:var(--teal);
+    border-radius:12px;
+    padding:12px 18px;
+    display:inline-flex;
+    align-items:center;
+  }
+  .logo-panel img{
+    height:36px;
+    width:auto;
+    display:block;
+  }
+
+  /* ---------- Progress ---------- */
+  .progress-wrap{margin-bottom:26px;}
+  .progress-steps{
+    display:flex;
+    gap:6px;
+    margin-bottom:8px;
+  }
+  .progress-seg{
+    flex:1;
+    height:6px;
+    border-radius:4px;
+    background:var(--border);
+    transition:background .3s ease;
+  }
+  .progress-seg.done{background:var(--teal);}
+  .progress-label{
+    font-size:13px;
+    color:#8a897d;
+    font-weight:600;
+  }
+
+  h1{
+    font-family:'Barlow Condensed', sans-serif;
+    font-weight:800;
+    text-transform:uppercase;
+    font-size:28px;
+    letter-spacing:0.3px;
+    margin:0 0 6px;
+    color:var(--charcoal);
+  }
+  .subtitle{
+    font-size:15.5px;
+    color:#5f5e57;
+    margin:0 0 26px;
+    line-height:1.45;
+  }
+
+  /* ---------- Form elements ---------- */
+  .field{margin-bottom:20px;}
+  label{
+    display:block;
+    font-size:15px;
+    font-weight:700;
+    margin-bottom:6px;
+    color:var(--charcoal);
+  }
+  .hint{
+    font-size:13.5px;
+    color:var(--teal-dark);
+    background:#E6F8FA;
+    border-radius:8px;
+    padding:8px 10px;
+    margin-top:6px;
+    display:flex;
+    gap:6px;
+    align-items:flex-start;
+    line-height:1.4;
+  }
+  .hint svg{flex-shrink:0;margin-top:2px;}
+
+  input[type="text"], input[type="email"], input[type="password"], input[type="tel"]{
+    width:100%;
+    padding:14px 16px;
+    font-size:16px;
+    font-family:'Source Sans Pro', sans-serif;
+    border:2px solid var(--border);
+    border-radius:10px;
+    background:var(--white);
+    color:var(--charcoal);
+    transition:border-color .15s ease;
+  }
+  input:focus{
+    outline:none;
+    border-color:var(--teal);
+  }
+  input.error{border-color:var(--coral);}
+  .error-msg{
+    color:var(--coral);
+    font-size:13.5px;
+    margin-top:6px;
+    font-weight:600;
+    display:none;
+  }
+  .error-msg.show{display:block;}
+
+  .pw-field{position:relative;}
+  .pw-toggle{
+    position:absolute;
+    right:14px; top:50%;
+    transform:translateY(-50%);
+    background:none;border:none;
+    cursor:pointer;
+    color:#8a897d;
+    font-size:13px;
+    font-weight:700;
+    font-family:'Source Sans Pro', sans-serif;
+    padding:4px;
+  }
+  .pw-checklist{
+    margin-top:10px;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+  }
+  .pw-rule{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:13.5px;
+    color:#8a897d;
+    transition:color .15s ease;
+  }
+  .pw-rule .tick{
+    width:18px;height:18px;
+    border-radius:50%;
+    border:2px solid #d8d6c4;
+    flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;
+    transition:all .15s ease;
+  }
+  .pw-rule.met{color:var(--mint);}
+  .pw-rule.met .tick{background:var(--mint);border-color:var(--mint);}
+  .pw-rule .tick svg{opacity:0;transform:scale(0.5);transition:all .15s ease;}
+  .pw-rule.met .tick svg{opacity:1;transform:scale(1);}
+
+  /* ---------- Buttons ---------- */
+  .btn{
+    width:100%;
+    padding:16px;
+    font-size:17px;
+    font-weight:700;
+    font-family:'Source Sans Pro', sans-serif;
+    border:none;
+    border-radius:12px;
+    cursor:pointer;
+    transition:transform .1s ease, opacity .15s ease, background .15s ease;
+  }
+  .btn:active{transform:scale(0.98);}
+  .btn-primary{
+    background:var(--teal);
+    color:var(--white);
+  }
+  .btn-primary:hover{background:var(--teal-dark);}
+  .btn-primary:disabled{
+    background:#cfe9ec;
+    cursor:not-allowed;
+  }
+  .btn-secondary{
+    background:var(--white);
+    color:var(--charcoal);
+    border:2px solid var(--border);
+    margin-top:10px;
+  }
+  .btn-secondary:hover{border-color:var(--teal);color:var(--teal-dark);}
+  .btn-text{
+    background:none;
+    border:none;
+    color:var(--teal-dark);
+    font-weight:700;
+    font-size:14.5px;
+    cursor:pointer;
+    padding:8px 0;
+    font-family:'Source Sans Pro', sans-serif;
+  }
+
+  .back-link{
+    display:inline-flex;
+    align-items:center;
+    gap:4px;
+    color:#8a897d;
+    font-size:14px;
+    font-weight:700;
+    text-decoration:none;
+    cursor:pointer;
+    margin-bottom:16px;
+    background:none;border:none;
+    padding:0;
+  }
+
+  /* ---------- Screens ---------- */
+  .screen{display:none;}
+  .screen.active{display:block; animation:fadeIn .25s ease;}
+  @keyframes fadeIn{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+
+  /* ---------- OTP ---------- */
+  .otp-row{
+    display:flex;
+    gap:10px;
+    margin-bottom:18px;
+  }
+  .otp-box{
+    width:100%;
+    aspect-ratio:1;
+    text-align:center;
+    font-size:24px;
+    font-weight:700;
+    padding:0;
+  }
+  .otp-info{
+    text-align:center;
+    font-size:14.5px;
+    color:#5f5e57;
+    margin-bottom:22px;
+  }
+  .otp-info b{color:var(--charcoal);}
+  .resend-row{
+    text-align:center;
+    font-size:14px;
+    color:#8a897d;
+    margin-top:-6px;
+    margin-bottom:22px;
+  }
+
+  /* ---------- Success ---------- */
+  .success-wrap{text-align:center; padding:12px 0 4px;}
+  .success-icon{
+    width:84px;height:84px;
+    border-radius:50%;
+    background:var(--mint);
+    display:flex;align-items:center;justify-content:center;
+    margin:0 auto 22px;
+    animation:pop .35s cubic-bezier(.34,1.56,.64,1);
+  }
+  @keyframes pop{from{transform:scale(0);} to{transform:scale(1);}}
+
+  /* ---------- Skip row ---------- */
+  .skip-row{
+    display:flex;
+    justify-content:center;
+    margin-top:14px;
+  }
+
+  .optional-tag{
+    display:inline-block;
+    font-size:12px;
+    font-weight:700;
+    color:#8a897d;
+    background:var(--cream);
+    border-radius:6px;
+    padding:2px 8px;
+    margin-left:6px;
+    vertical-align:middle;
+    text-transform:none;
+  }
+
+  footer.note{
+    text-align:center;
+    font-size:12.5px;
+    color:#a5a394;
+    margin-top:18px;
+  }
+
+  @media (max-width:480px){
+    .card{padding:28px 20px 24px; border-radius:16px;}
+    h1{font-size:24px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-band"></div>
+<div class="bg-dot"></div>
+
+<div class="card">
+
+  <div class="logo-row">
+    <div class="logo-panel">
+      <img src="data:image/png;base64,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" alt="Firki — Teach For India Online">
+    </div>
+  </div>
+
+  <!-- ===================== SCREEN 1: CREATE ACCOUNT ===================== -->
+  <section class="screen active" id="screen-1">
+    <div class="progress-wrap">
+      <div class="progress-steps">
+        <div class="progress-seg done"></div>
+        <div class="progress-seg"></div>
+        <div class="progress-seg"></div>
+      </div>
+      <div class="progress-label">Step 1 of 3 — Create account</div>
+    </div>
+
+    <h1>Let's get you started</h1>
+    <p class="subtitle">Just three quick things, then you're in.</p>
+
+    <div class="field">
+      <label for="username">Username</label>
+      <input type="text" id="username" placeholder="e.g. meera.teacher or 9876543210">
+      <div class="hint">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#00919F" stroke-width="1.5"/><path d="M8 7v4.2M8 4.8v.1" stroke="#00919F" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <span>Tip: Use your mobile number or email as your username — something you'll always remember.</span>
+      </div>
+      <div class="error-msg" id="err-username">Please enter a username, mobile number, or email.</div>
+    </div>
+
+    <div class="field">
+      <label for="email">Email address</label>
+      <input type="email" id="email" placeholder="you@example.com">
+      <div class="error-msg" id="err-email">Please enter a valid email address.</div>
+    </div>
+
+    <div class="field">
+      <label for="password">Password</label>
+      <div class="pw-field">
+        <input type="password" id="password" placeholder="Create a password">
+        <button type="button" class="pw-toggle" id="pw-toggle">SHOW</button>
+      </div>
+      <div class="pw-checklist">
+        <div class="pw-rule" id="rule-length">
+          <span class="tick"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1 5l3 3 5-6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <span>At least 8 characters</span>
+        </div>
+        <div class="pw-rule" id="rule-number">
+          <span class="tick"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1 5l3 3 5-6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <span>Contains at least 1 number</span>
+        </div>
+      </div>
+      <div class="error-msg" id="err-password">Your password needs to meet both rules above.</div>
+    </div>
+
+    <button class="btn btn-primary" id="btn-step1">Create my account</button>
+
+    <footer class="note">By continuing, you agree to Firki's Terms and Privacy Policy.</footer>
+  </section>
+
+  <!-- ===================== SCREEN 2: MOBILE NUMBER ===================== -->
+  <section class="screen" id="screen-2">
+    <button class="back-link" id="back-to-1">&larr; Back</button>
+    <div class="progress-wrap">
+      <div class="progress-steps">
+        <div class="progress-seg done"></div>
+        <div class="progress-seg done"></div>
+        <div class="progress-seg"></div>
+      </div>
+      <div class="progress-label">Step 2 of 3 — Verify your number</div>
+    </div>
+
+    <h1>What's your mobile number?</h1>
+    <p class="subtitle">We'll send you a one-time code to confirm it's really you. This also helps you recover your account if you ever forget your password.</p>
+
+    <div class="field">
+      <label for="mobile">Mobile number</label>
+      <input type="tel" id="mobile" placeholder="10-digit mobile number" maxlength="10">
+      <div class="error-msg" id="err-mobile">Please enter a valid 10-digit mobile number.</div>
+    </div>
+
+    <button class="btn btn-primary" id="btn-step2">Send me the code</button>
+  </section>
+
+  <!-- ===================== SCREEN 3: OTP ===================== -->
+  <section class="screen" id="screen-3">
+    <button class="back-link" id="back-to-2">&larr; Back</button>
+    <div class="progress-wrap">
+      <div class="progress-steps">
+        <div class="progress-seg done"></div>
+        <div class="progress-seg done"></div>
+        <div class="progress-seg done"></div>
+      </div>
+      <div class="progress-label">Step 3 of 3 — Enter the code</div>
+    </div>
+
+    <h1>Enter the code</h1>
+    <p class="otp-info">We sent a 6-digit code to <b id="mobile-display">your number</b>.</p>
+
+    <div class="otp-row">
+      <input type="text" class="otp-box" maxlength="1" inputmode="numeric">
+      <input type="text" class="otp-box" maxlength="1" inputmode="numeric">
+      <input type="text" class="otp-box" maxlength="1" inputmode="numeric">
+      <input type="text" class="otp-box" maxlength="1" inputmode="numeric">
+      <input type="text" class="otp-box" maxlength="1" inputmode="numeric">
+      <input type="text" class="otp-box" maxlength="1" inputmode="numeric">
+    </div>
+    <div class="error-msg" id="err-otp" style="text-align:center;">That code doesn't look right. Please try again.</div>
+
+    <div class="resend-row" id="resend-row">Didn't get it? Resend code in <b id="timer">00:30</b></div>
+
+    <button class="btn btn-primary" id="btn-step3">Verify and continue</button>
+  </section>
+
+  <!-- ===================== SCREEN 4: SUCCESS ===================== -->
+  <section class="screen" id="screen-4">
+    <div class="success-wrap">
+      <div class="success-icon">
+        <svg width="40" height="40" viewBox="0 0 40 40" fill="none"><path d="M8 21l7 7 17-17" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <h1 style="text-align:center;">You're all set!</h1>
+      <p class="subtitle" style="text-align:center;">Your Firki account is ready. Want to tell us a little about yourself? It only takes a minute — or you can skip it and do it later.</p>
+    </div>
+
+    <button class="btn btn-primary" id="btn-add-details">Add my details</button>
+    <button class="btn btn-secondary" id="btn-skip-to-dashboard">Skip for now — take me to my dashboard</button>
+  </section>
+
+  <!-- ===================== SCREEN 5: OPTIONAL PROFILE ===================== -->
+  <section class="screen" id="screen-5">
+    <h1>Tell us about yourself <span class="optional-tag">Optional</span></h1>
+    <p class="subtitle">This helps us recommend the right courses for you. Skip anything you're not sure about.</p>
+
+    <div class="field">
+      <label for="fullname">Your name</label>
+      <input type="text" id="fullname" placeholder="e.g. Meera Sharma">
+    </div>
+
+    <div class="field">
+      <label for="school">School name</label>
+      <input type="text" id="school" placeholder="e.g. Municipal School No. 4">
+    </div>
+
+    <div class="field">
+      <label for="subject">Subject you teach</label>
+      <input type="text" id="subject" placeholder="e.g. Mathematics, Grade 5">
+    </div>
+
+    <div class="field">
+      <label for="city">City</label>
+      <input type="text" id="city" placeholder="e.g. Pune">
+    </div>
+
+    <button class="btn btn-primary" id="btn-save-profile">Save and go to my dashboard</button>
+    <div class="skip-row">
+      <button class="btn-text" id="btn-skip-profile">Skip for now</button>
+    </div>
+  </section>
+
+  <!-- ===================== SCREEN 6: DASHBOARD PLACEHOLDER ===================== -->
+  <section class="screen" id="screen-6">
+    <div class="success-wrap">
+      <div class="success-icon" style="background:var(--teal);">
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none"><path d="M6 18h24M18 6v24" stroke="white" stroke-width="3" stroke-linecap="round"/></svg>
+      </div>
+      <h1 style="text-align:center;">Welcome to Firki!</h1>
+      <p class="subtitle" style="text-align:center;">This is where your dashboard would appear — your courses, progress, and announcements, all in one place.</p>
+      <button class="btn btn-secondary" id="btn-restart">&larr; Restart demo</button>
+    </div>
+  </section>
+
+</div>
+
+<script>
+  // ---------- helpers ----------
+  function show(id){
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    window.scrollTo(0,0);
+  }
+  function setError(inputId, errId, isError){
+    document.getElementById(inputId).classList.toggle('error', isError);
+    document.getElementById(errId).classList.toggle('show', isError);
+  }
+
+  // ---------- Screen 1: password live checklist ----------
+  const pw = document.getElementById('password');
+  const ruleLength = document.getElementById('rule-length');
+  const ruleNumber = document.getElementById('rule-number');
+
+  pw.addEventListener('input', () => {
+    const val = pw.value;
+    ruleLength.classList.toggle('met', val.length >= 8);
+    ruleNumber.classList.toggle('met', /\d/.test(val));
+  });
+
+  document.getElementById('pw-toggle').addEventListener('click', function(){
+    const isPassword = pw.type === 'password';
+    pw.type = isPassword ? 'text' : 'password';
+    this.textContent = isPassword ? 'HIDE' : 'SHOW';
+  });
+
+  // ---------- Screen 1 -> 2 ----------
+  document.getElementById('btn-step1').addEventListener('click', () => {
+    const username = document.getElementById('username').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const passwordVal = pw.value;
+
+    const usernameOk = username.length > 0;
+    const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    const passwordOk = passwordVal.length >= 8 && /\d/.test(passwordVal);
+
+    setError('username','err-username', !usernameOk);
+    setError('email','err-email', !emailOk);
+    setError('password','err-password', !passwordOk);
+
+    if(usernameOk && emailOk && passwordOk){
+      // If username looks like a 10-digit number, pre-fill the mobile step
+      if(/^\d{10}$/.test(username)){
+        document.getElementById('mobile').value = username;
+      }
+      show('screen-2');
+    }
+  });
+
+  document.getElementById('back-to-1').addEventListener('click', () => show('screen-1'));
+
+  // ---------- Screen 2 -> 3 ----------
+  document.getElementById('btn-step2').addEventListener('click', () => {
+    const mobile = document.getElementById('mobile').value.trim();
+    const ok = /^\d{10}$/.test(mobile);
+    setError('mobile','err-mobile', !ok);
+    if(ok){
+      document.getElementById('mobile-display').textContent = '+91 ' + mobile;
+      show('screen-3');
+      startTimer();
+      document.querySelectorAll('.otp-box')[0].focus();
+    }
+  });
+
+  document.getElementById('back-to-2').addEventListener('click', () => show('screen-2'));
+
+  // ---------- Screen 3: OTP boxes ----------
+  const otpBoxes = document.querySelectorAll('.otp-box');
+  otpBoxes.forEach((box, idx) => {
+    box.addEventListener('input', () => {
+      box.value = box.value.replace(/[^0-9]/g,'');
+      if(box.value && idx < otpBoxes.length - 1){
+        otpBoxes[idx+1].focus();
+      }
+    });
+    box.addEventListener('keydown', (e) => {
+      if(e.key === 'Backspace' && !box.value && idx > 0){
+        otpBoxes[idx-1].focus();
+      }
+    });
+  });
+
+  let timerInterval;
+  function startTimer(){
+    let seconds = 30;
+    const timerEl = document.getElementById('timer');
+    const resendRow = document.getElementById('resend-row');
+    resendRow.innerHTML = 'Didn\'t get it? Resend code in <b id="timer">00:30</b>';
+    clearInterval(timerInterval);
+    timerInterval = setInterval(() => {
+      seconds--;
+      const mm = String(Math.floor(seconds/60)).padStart(2,'0');
+      const ss = String(seconds%60).padStart(2,'0');
+      const t = document.getElementById('timer');
+      if(t) t.textContent = `${mm}:${ss}`;
+      if(seconds <= 0){
+        clearInterval(timerInterval);
+        resendRow.innerHTML = '<button class="btn-text" id="btn-resend">Resend code</button>';
+        document.getElementById('btn-resend').addEventListener('click', startTimer);
+      }
+    }, 1000);
+  }
+
+  document.getElementById('btn-step3').addEventListener('click', () => {
+    const code = Array.from(otpBoxes).map(b => b.value).join('');
+    const ok = code.length === 6; // demo: any 6 digits passes
+    document.getElementById('err-otp').classList.toggle('show', !ok);
+    otpBoxes.forEach(b => b.classList.toggle('error', !ok));
+    if(ok){
+      clearInterval(timerInterval);
+      show('screen-4');
+    }
+  });
+
+  // ---------- Screen 4 ----------
+  document.getElementById('btn-add-details').addEventListener('click', () => show('screen-5'));
+  document.getElementById('btn-skip-to-dashboard').addEventListener('click', () => show('screen-6'));
+
+  // ---------- Screen 5 ----------
+  document.getElementById('btn-save-profile').addEventListener('click', () => show('screen-6'));
+  document.getElementById('btn-skip-profile').addEventListener('click', () => show('screen-6'));
+
+  // ---------- Screen 6 ----------
+  document.getElementById('btn-restart').addEventListener('click', () => {
+    document.querySelectorAll('input').forEach(i => i.value = '');
+    document.querySelectorAll('.error').forEach(i => i.classList.remove('error'));
+    document.querySelectorAll('.error-msg').forEach(i => i.classList.remove('show'));
+    document.querySelectorAll('.pw-rule').forEach(r => r.classList.remove('met'));
+    show('screen-1');
+  });
+</script>
+
+</body>
+</html>
